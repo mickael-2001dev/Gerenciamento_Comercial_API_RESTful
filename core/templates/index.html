@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang=”en”>
+<head>
+	<meta charset=”utf-8">
+	<title>Vue-js | Django | Crud App</title>
+	<meta name=”viewport” content=”width=device-width, initial-scale=1.0">
+	<meta name=”description” content=”A simple crud app made with the vue js and django”>
+	<meta name=”keywords” content=”vuejs, django, crudapp, restapi”>
+ 	<link rel=”stylesheet” href=”https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity=”sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm” crossorigin=”anonymous”>
+</head>
+<body>
+	<div id="starting">
+	     <div class="container">
+	       <div class="row">
+	         <h1>Carros
+	         <button class="btn btn-success">Adicionar Carro</button>
+	         </h1>
+	         <table class="table">
+	           <thead>
+	             <tr>
+	               <th scope="col">#</th>
+	               <th scope="col">Modelo</th>
+	               <th scope="col">Ano</th>
+	               <th scope="col">Preco</th>
+	               <th scope="col">Marca</th>
+	             </tr>
+	           </thead>
+	           <tbody>
+	             <tr v-for="article in articles">
+	               <th scope="row">${article.article_id}</th>
+	               <td>${article.article_heading}</td>
+	               <td>
+	                 <button class="btn btn-info" v-on:click="getArticle(article.article_id)">Edit</button>
+	                 <button class="btn btn-danger" v-on:click="deleteArticle(article.article_id)">Delete</button>
+	               </td>
+	             </tr>
+	           </tbody>
+	         </table>
+	       </div>
+	     </div>
+	     <div class="loading" v-if="loading===true">Loading&#8230;</div>
+	   </div>
+
+<script src=”https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity=”sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN” crossorigin=”anonymous”></script>
+<script src=”https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity=”sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q” crossorigin=”anonymous”></script>
+<script src=”https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity=”sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl” crossorigin=”anonymous”></script>
+<script src=”https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+<script src=”https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+<script type="text/javascript">
+	new vue({
+			el: ‘#starting’,
+			delimiters: ['${‘,’}'],
+			data: {
+			carros: [],
+			loading: false,
+			currentCarro: {},
+			message: null,
+			newCarro: { 'modelo': null, 'ano': null, 'preco': null, 'marca': null},
+	 	},
+	 	mounted: function() {
+	 		this.getCarros();
+	 	},
+	 	methods:  {
+	 		getCarros: function() {
+	 			this.loading = true;
+	 			this.$http.get('api/carros/')
+	 				.then((response) => {
+	 					this.carros = response.data;
+	 					this.loading = false;
+	 				})
+	 				.catch((err) => {
+	 					this.loading = false;
+	 					console.log(err);
+	 				})
+	 		},
+	 		getCarros: function(id) {
+	 			this.loading = true;
+	 			this.$http.get('api/carros/${id}/')
+	 				.then((response) => {
+	 					this.carros = response.data;
+	 					this.loading = false;
+	 				})
+	 				.catch((err) => {
+	 					this.loading = false;
+	 					console.log(err);
+	 				})
+	 		},
+	 		addCarros: function() {
+	 			this.loading = true;
+	 			this.$http.post('api/carros/', this.newCarro)
+	 				.then((response) => {
+	 					this.carros = response.data;
+	 					this.loading = false;
+	 				})
+	 				.catch((err) => {
+	 					this.loading = false;
+	 					console.log(err);
+	 				})
+	 		},
+	 		updateCarros: function() {
+	 			this.loading = true;
+	 			this.$http.put('api/carros/${this.currentCarro.id}/', this.currentCarro)
+	 				.then((response) => {
+	 					this.carros = response.data;
+	 					this.loading = false;
+	 				})
+	 				.catch((err) => {
+	 					this.loading = false;
+	 					console.log(err);
+	 				})
+	 		},
+	 		deleteCarros: function(id) {
+	 			this.loading = true;
+	 			this.$http.delete('api/carros/${id}/')
+	 				.then((response) => {
+	 					this.carros = response.data;
+	 					this.loading = false;
+	 				})
+	 				.catch((err) => {
+	 					this.loading = false;
+	 					console.log(err);
+	 				})
+	 		}
+	 	}
+	});
+</script>
+</body>
+</html
+
